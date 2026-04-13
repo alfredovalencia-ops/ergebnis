@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ihr KI-Compliance-Ergebnis</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rot-bg: #FFF1F1;
+    --rot-akzent: #C0392B;
+    --rot-text: #7B1A1A;
+    --gelb-bg: #FFFBF0;
+    --gelb-akzent: #D4A017;
+    --gelb-text: #7A5C00;
+    --gruen-bg: #F0FFF4;
+    --gruen-akzent: #1E8449;
+    --gruen-text: #145A32;
+    --dunkel: #1A1A2E;
+    --grau: #6B7280;
+    --hell: #F9FAFB;
+    --weiss: #FFFFFF;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--hell);
+    color: var(--dunkel);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 580px;
+    animation: einblenden 0.6s ease forwards;
+  }
+
+  @keyframes einblenden {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .kopf {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .kopf .label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--grau);
+    margin-bottom: 0.5rem;
+  }
+
+  .kopf h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.9rem;
+    line-height: 1.2;
+    color: var(--dunkel);
+  }
+
+  /* Score-Karte */
+  .karte {
+    background: var(--weiss);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 1.25rem;
+    border: 1.5px solid #E5E7EB;
+  }
+
+  .ampel-zeile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .ampel-punkt {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ampel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  /* Score-Anzeige */
+  .score-bereich {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .score-zahl {
+    font-family: 'DM Serif Display', serif;
+    font-size: 4rem;
+    line-height: 1;
+  }
+
+  .score-max {
+    font-size: 1.1rem;
+    color: var(--grau);
+    font-weight: 300;
+  }
+
+  /* Fortschrittsbalken */
+  .balken-huelle {
+    background: #F3F4F6;
+    border-radius: 999px;
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .balken-fuell {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .ergebnis-text {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: #374151;
+  }
+
+  /* Farb-Varianten */
+  .rot .ampel-punkt   { background: var(--rot-akzent); }
+  .rot .ampel-badge   { background: var(--rot-bg); color: var(--rot-text); }
+  .rot .score-zahl    { color: var(--rot-akzent); }
+  .rot .balken-fuell  { background: var(--rot-akzent); }
+
+  .gelb .ampel-punkt  { background: var(--gelb-akzent); }
+  .gelb .ampel-badge  { background: var(--gelb-bg); color: var(--gelb-text); }
+  .gelb .score-zahl   { color: var(--gelb-akzent); }
+  .gelb .balken-fuell { background: var(--gelb-akzent); }
+
+  .gruen .ampel-punkt  { background: var(--gruen-akzent); }
+  .gruen .ampel-badge  { background: var(--gruen-bg); color: var(--gruen-text); }
+  .gruen .score-zahl   { color: var(--gruen-akzent); }
+  .gruen .balken-fuell { background: var(--gruen-akzent); }
+
+  /* Trennlinie */
+  .trennlinie {
+    text-align: center;
+    color: var(--grau);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0.5rem 0 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .trennlinie::before, .trennlinie::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #E5E7EB;
+  }
+
+  /* E-Mail Karte */
+  .email-karte {
+    background: var(--weiss);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1.5px solid #E5E7EB;
+  }
+
+  .email-karte h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .email-karte p {
+    font-size: 0.9rem;
+    color: var(--grau);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+  }
+
+  .email-karte input[type="email"] {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid #D1D5DB;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--dunkel);
+    margin-bottom: 0.75rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .email-karte input[type="email"]:focus {
+    border-color: var(--dunkel);
+  }
+
+  .btn {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--dunkel);
+    color: var(--weiss);
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn:hover { opacity: 0.85; }
+
+  .erfolg {
+    display: none;
+    text-align: center;
+    padding: 1rem;
+    color: var(--gruen-text);
+    font-size: 0.95rem;
+  }
+
+  .fehler-box {
+    display: none;
+    background: var(--rot-bg);
+    color: var(--rot-text);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    color: #9CA3AF;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="kopf">
+    <div class="label">KI-Compliance-Check</div>
+    <h1>Ihr persönliches Ergebnis</h1>
+  </div>
+
+  <!-- Score-Karte -->
+  <div class="karte" id="score-karte">
+    <div class="ampel-zeile">
+      <div class="ampel-punkt"></div>
+      <div class="ampel-badge" id="ampel-badge">Wird geladen...</div>
+    </div>
+
+    <div class="score-bereich">
+      <div class="score-zahl" id="score-zahl">—</div>
+      <div class="score-max">von 100 Punkten</div>
+    </div>
+
+    <div class="balken-huelle">
+      <div class="balken-fuell" id="balken" style="width: 0%"></div>
+    </div>
+
+    <div class="ergebnis-text" id="ergebnis-text">
+      Ihr Ergebnis wird ausgewertet...
+    </div>
+  </div>
+
+  <div class="trennlinie">Detailbericht</div>
+
+  <!-- E-Mail Karte -->
+  <div class="email-karte">
+    <h2>Vollständiger Bericht per E-Mail</h2>
+    <p>Erhalten Sie Ihre detaillierte Analyse mit konkreten Handlungsempfehlungen als PDF — kostenlos und unverbindlich.</p>
+
+    <div class="fehler-box" id="fehler-box">Bitte geben Sie eine gültige E-Mail-Adresse ein.</div>
+
+    <input type="email" id="email-feld" placeholder="ihre@email.de" />
+    <button class="btn" onclick="emailAbschicken()">Detailbericht anfordern →</button>
+
+    <div class="erfolg" id="erfolg-meldung">
+      ✓ Vielen Dank — Ihr Bericht ist unterwegs.
+    </div>
+  </div>
+
+  <div class="footer">compliance-check.ai &nbsp;·&nbsp; KI-Compliance für den Mittelstand</div>
+
+</div>
+
+<script>
+  function getParam(name) {
+    const url = new URLSearchParams(window.location.search);
+    return url.get(name);
+  }
+
+  const score  = parseInt(getParam('score')) || 0;
+  const ampel  = (getParam('ampel') || 'rot').toLowerCase();
+  const text   = getParam('text')
+    ? decodeURIComponent(getParam('text'))
+    : 'Ihr Ergebnis konnte nicht geladen werden. Bitte versuchen Sie es erneut.';
+
+  const karte  = document.getElementById('score-karte');
+  const badge  = document.getElementById('ampel-badge');
+  const zahl   = document.getElementById('score-zahl');
+  const balken = document.getElementById('balken');
+  const info   = document.getElementById('ergebnis-text');
+
+  const config = {
+    rot:   { label: '🔴  Hohes Risiko — Sofort handeln',      klasse: 'rot'   },
+    gelb:  { label: '🟡  Handlungsbedarf — Kurzfristig',      klasse: 'gelb'  },
+    gruen: { label: '🟢  Solide Basis — Weiter optimieren',   klasse: 'gruen' },
+  };
+
+  const c = config[ampel] || config['rot'];
+
+  karte.classList.add(c.klasse);
+  badge.textContent = c.label;
+  zahl.textContent  = score;
+  info.textContent  = text;
+
+  setTimeout(() => {
+    balken.style.width = score + '%';
+  }, 300);
+
+  function emailAbschicken() {
+    const email  = document.getElementById('email-feld').value.trim();
+    const fehler = document.getElementById('fehler-box');
+    const erfolg = document.getElementById('erfolg-meldung');
+
+    const gueltig = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (!gueltig) {
+      fehler.style.display = 'block';
+      return;
+    }
+
+    fehler.style.display = 'none';
+
+    // Webhook URL hier eintragen sobald bekannt
+    const webhookUrl = 'DEINE_MAKE_WEBHOOK_URL_HIER';
+
+    const scoreParam = getParam('score') || '0';
+    const ampelParam = getParam('ampel') || 'rot';
+
+    fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, score: scoreParam, ampel: ampelParam })
+    })
+    .then(() => {
+      document.getElementById('email-feld').style.display = 'none';
+      document.querySelector('.btn').style.display = 'none';
+      erfolg.style.display = 'block';
+    })
+    .catch(() => {
+      erfolg.style.display = 'block';
+    });
+  }
+</script>
+
+</body>
+</html>
