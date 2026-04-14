@@ -402,7 +402,11 @@
   // ── Polling starten ──
   async function startPolling(rid) {
     let versuche = 0;
-    const maxVersuche = 20; // max 40 Sekunden (20 x 2 Sek)
+    const maxVersuche = 30; // max 60 Sekunden (30 x 2 Sek)
+
+    // Sofort beim Start die erste Anfrage schicken
+    const sofortErfolg = await ergebnisAbrufen(rid);
+    if (sofortErfolg) return;
 
     const intervall = setInterval(async () => {
       versuche++;
@@ -411,7 +415,6 @@
       if (erfolg || versuche >= maxVersuche) {
         clearInterval(intervall);
         if (!erfolg) {
-          // Timeout — Fehlermeldung anzeigen
           badge.innerHTML = '⚠️  Ergebnis nicht gefunden';
           zahl.textContent = '—';
           info.textContent = 'Das Ergebnis konnte nicht geladen werden. Bitte versuchen Sie es erneut.';
