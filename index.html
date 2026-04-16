@@ -2,475 +2,439 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ihr KI-Compliance-Ergebnis</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ihr KI-Compliance-Ergebnis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f6f7;
+      --navy: #0f172a;
+      --line: #e5e7eb;
+      --card: #ffffff;
+      --muted: #6b7280;
 
-  :root {
-    --rot-bg: #FFF1F1;
-    --rot-akzent: #C0392B;
-    --rot-text: #7B1A1A;
-    --gelb-bg: #FFFBF0;
-    --gelb-akzent: #D4A017;
-    --gelb-text: #7A5C00;
-    --gruen-bg: #F0FFF4;
-    --gruen-akzent: #1E8449;
-    --gruen-text: #145A32;
-    --dunkel: #1A1A2E;
-    --grau: #6B7280;
-    --hell: #F9FAFB;
-    --weiss: #FFFFFF;
-  }
+      /* Ampel-Farben werden per JS gesetzt */
+      --ampel-color: #e67e22;
+      --ampel-soft: #fff1e6;
+      --ampel-text: #c75b12;
+    }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--hell);
-    color: var(--dunkel);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
-  }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  .container {
-    width: 100%;
-    max-width: 580px;
-    animation: einblenden 0.6s ease forwards;
-  }
+    body {
+      font-family: 'Ubuntu', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      min-height: 100vh;
+      padding: 32px 16px 48px;
+    }
 
-  @keyframes einblenden {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+    .wrap {
+      max-width: 620px;
+      margin: 0 auto;
+    }
 
-  .kopf {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
+    /* ── KOPF ── */
+    .eyebrow {
+      text-align: center;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
 
-  .kopf .label {
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--grau);
-    margin-bottom: 0.5rem;
-  }
+    h1 {
+      text-align: center;
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.1;
+      margin-bottom: 28px;
+    }
 
-  .kopf h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.9rem;
-    line-height: 1.2;
-    color: var(--dunkel);
-  }
+    /* ── SCORE-KARTE ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 36px 34px 30px;
+      box-shadow: 0 2px 12px rgba(15,23,42,.06);
+      margin-bottom: 10px;
+    }
 
-  /* Score-Karte */
-  .karte {
-    background: var(--weiss);
-    border-radius: 20px;
-    padding: 2rem;
-    margin-bottom: 1.25rem;
-    border: 1.5px solid #E5E7EB;
-  }
+    /* Ampel-Kreis */
+    .ampel-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
 
-  .ampel-zeile {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
+    .ampel-kreis {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--ampel-color);
+      box-shadow: 0 0 0 14px color-mix(in srgb, var(--ampel-color) 15%, transparent);
+      transition: background 0.6s, box-shadow 0.6s;
+    }
 
-  .ampel-punkt {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+    /* Lade-Animation */
+    .lade-punkte {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .lade-punkte span {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #d1d5db;
+      animation: pulse 1.2s infinite;
+    }
+    .lade-punkte span:nth-child(2) { animation-delay: 0.2s; }
+    .lade-punkte span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pulse {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.85); }
+      40%            { opacity: 1;   transform: scale(1.15); }
+    }
 
-  .ampel-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 1rem;
-    border-radius: 999px;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
+    /* Status-Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--ampel-soft);
+      color: var(--ampel-text);
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 22px;
+    }
 
-  /* Score-Anzeige */
-  .score-bereich {
-    display: flex;
-    align-items: baseline;
-    gap: 0.4rem;
-    margin-bottom: 1.25rem;
-  }
+    /* Score-Zahl */
+    .score-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .score-zahl {
+      font-size: 88px;
+      line-height: 0.9;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .score-label {
+      font-size: 18px;
+      color: var(--muted);
+      padding-bottom: 10px;
+      font-weight: 500;
+    }
 
-  .score-zahl {
-    font-family: 'DM Serif Display', serif;
-    font-size: 4rem;
-    line-height: 1;
-  }
+    /* Fortschrittsbalken */
+    .bar {
+      width: 100%;
+      height: 8px;
+      background: var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 10px 0 22px;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--ampel-color);
+      width: 0%;
+      transition: width 1.2s cubic-bezier(.4,0,.2,1), background 0.6s;
+    }
 
-  .score-max {
-    font-size: 1.1rem;
-    color: var(--grau);
-    font-weight: 300;
-  }
+    /* Beschreibungstext */
+    .desc {
+      font-size: 17px;
+      line-height: 1.6;
+      color: #4b5563;
+    }
 
-  /* Fortschrittsbalken */
-  .balken-huelle {
-    background: #F3F4F6;
-    border-radius: 999px;
-    height: 8px;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-  }
+    /* Lade-Text */
+    .lade-text {
+      font-size: 16px;
+      color: #9ca3af;
+      text-align: center;
+      padding: 8px 0;
+    }
 
-  .balken-fuell {
-    height: 100%;
-    border-radius: 999px;
-    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+    /* ── TRENNLINIE ── */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-size: 13px;
+      margin: 28px 0 18px;
+    }
+    .section-title::before,
+    .section-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
 
-  .ergebnis-text {
-    font-size: 1rem;
-    line-height: 1.65;
-    color: #374151;
-  }
+    /* ── E-MAIL KARTE ── */
+    .report {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 30px 34px 26px;
+      box-shadow: 0 2px 12px rgba(15,23,42,.06);
+    }
+    .report h2 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .report p {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+    .email-input {
+      width: 100%;
+      height: 54px;
+      border: 1px solid #d6dae1;
+      border-radius: 12px;
+      font-size: 17px;
+      padding: 0 16px;
+      font-family: 'Ubuntu', Arial, sans-serif;
+      color: var(--navy);
+      background: #fff;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .email-input:focus { border-color: var(--navy); }
 
-  /* Farb-Varianten */
-  .rot .ampel-punkt   { background: var(--rot-akzent); }
-  .rot .ampel-badge   { background: var(--rot-bg); color: var(--rot-text); }
-  .rot .score-zahl    { color: var(--rot-akzent); }
-  .rot .balken-fuell  { background: var(--rot-akzent); }
+    .btn {
+      width: 100%;
+      height: 54px;
+      border: none;
+      border-radius: 12px;
+      background: var(--navy);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: 'Ubuntu', Arial, sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.88; }
 
-  .gelb .ampel-punkt  { background: var(--gelb-akzent); }
-  .gelb .ampel-badge  { background: var(--gelb-bg); color: var(--gelb-text); }
-  .gelb .score-zahl   { color: var(--gelb-akzent); }
-  .gelb .balken-fuell { background: var(--gelb-akzent); }
+    .erfolg {
+      display: none;
+      text-align: center;
+      padding: 12px;
+      color: #1e7d3a;
+      font-size: 16px;
+      font-weight: 500;
+    }
 
-  .gruen .ampel-punkt  { background: var(--gruen-akzent); }
-  .gruen .ampel-badge  { background: var(--gruen-bg); color: var(--gruen-text); }
-  .gruen .score-zahl   { color: var(--gruen-akzent); }
-  .gruen .balken-fuell { background: var(--gruen-akzent); }
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      margin-top: 22px;
+      color: #9ca3af;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
 
-  /* Lade-Animation */
-  .lade-animation {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--grau);
-    font-size: 0.9rem;
-  }
-
-  .lade-punkte span {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--grau);
-    animation: tippen 1.2s infinite;
-    margin: 0 2px;
-  }
-
-  .lade-punkte span:nth-child(2) { animation-delay: 0.2s; }
-  .lade-punkte span:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes tippen {
-    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
-    40%           { opacity: 1;   transform: scale(1.2); }
-  }
-
-  /* Trennlinie */
-  .trennlinie {
-    text-align: center;
-    color: var(--grau);
-    font-size: 0.8rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin: 0.5rem 0 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  .trennlinie::before, .trennlinie::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: #E5E7EB;
-  }
-
-  /* E-Mail Karte */
-  .email-karte {
-    background: var(--weiss);
-    border-radius: 20px;
-    padding: 2rem;
-    border: 1.5px solid #E5E7EB;
-  }
-
-  .email-karte h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.25rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .email-karte p {
-    font-size: 0.9rem;
-    color: var(--grau);
-    margin-bottom: 1.25rem;
-    line-height: 1.5;
-  }
-
-  .email-karte input[type="email"] {
-    width: 100%;
-    padding: 0.85rem 1rem;
-    border: 1.5px solid #D1D5DB;
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    color: var(--dunkel);
-    margin-bottom: 0.75rem;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .email-karte input[type="email"]:focus {
-    border-color: var(--dunkel);
-  }
-
-  .btn {
-    width: 100%;
-    padding: 0.9rem;
-    background: var(--dunkel);
-    color: var(--weiss);
-    border: none;
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-
-  .btn:hover { opacity: 0.85; }
-
-  .erfolg {
-    display: none;
-    text-align: center;
-    padding: 1rem;
-    color: var(--gruen-text);
-    font-size: 0.95rem;
-  }
-
-  .fehler-box {
-    display: none;
-    background: var(--rot-bg);
-    color: var(--rot-text);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .footer {
-    text-align: center;
-    margin-top: 2rem;
-    font-size: 0.75rem;
-    color: #9CA3AF;
-  }
-</style>
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 { font-size: 28px; }
+      .card, .report { padding: 24px 20px 22px; }
+      .score-zahl { font-size: 68px; }
+      .ampel-kreis { width: 64px; height: 64px; }
+      .report h2 { font-size: 22px; }
+    }
+  </style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="container">
+  <div class="eyebrow">KI-Compliance-Check</div>
+  <h1>Ihr persönliches Ergebnis</h1>
 
-  <div class="kopf">
-    <div class="label">KI-Compliance-Check</div>
-    <h1>Ihr persönliches Ergebnis</h1>
-  </div>
+  <div class="card" id="score-karte">
 
-  <!-- Score-Karte -->
-  <div class="karte" id="score-karte">
-    <div class="ampel-zeile">
-      <div class="ampel-punkt"></div>
-      <div class="ampel-badge" id="ampel-badge">
-        <div class="lade-animation">
-          Auswertung läuft
-          <div class="lade-punkte">
-            <span></span><span></span><span></span>
-          </div>
-        </div>
+    <!-- Lade-Zustand -->
+    <div id="lade-bereich">
+      <div class="lade-punkte">
+        <span></span><span></span><span></span>
       </div>
+      <div class="lade-text">Auswertung läuft...</div>
     </div>
 
-    <div class="score-bereich">
-      <div class="score-zahl" id="score-zahl">—</div>
-      <div class="score-max">von 100 Punkten</div>
+    <!-- Ergebnis-Zustand (versteckt bis Daten kommen) -->
+    <div id="ergebnis-bereich" style="display:none;">
+      <div class="ampel-wrap">
+        <div class="ampel-kreis" id="ampel-kreis"></div>
+      </div>
+      <div style="text-align:center; margin-bottom:22px;">
+        <span class="status-badge" id="status-badge"></span>
+      </div>
+      <div class="score-row" style="justify-content:center;">
+        <div class="score-zahl" id="score-zahl">—</div>
+        <div class="score-label">von 100 Punkten</div>
+      </div>
+      <div class="bar">
+        <div class="bar-fill" id="bar-fill"></div>
+      </div>
+      <div class="desc" id="desc-text"></div>
     </div>
 
-    <div class="balken-huelle">
-      <div class="balken-fuell" id="balken" style="width: 0%"></div>
-    </div>
-
-    <div class="ergebnis-text" id="ergebnis-text">
-      Ihr Ergebnis wird ausgewertet...
-    </div>
   </div>
 
-  <div class="trennlinie">Detailbericht</div>
+  <div class="section-title">Detailbericht</div>
 
-  <!-- E-Mail Karte -->
-  <div class="email-karte">
+  <div class="report">
     <h2>Vollständiger Bericht per E-Mail</h2>
-    <p>Erhalten Sie Ihre detaillierte Analyse mit konkreten Handlungsempfehlungen als PDF — kostenlos und unverbindlich.</p>
-
-    <div class="fehler-box" id="fehler-box">Bitte geben Sie eine gültige E-Mail-Adresse ein.</div>
-
-    <input type="email" id="email-feld" placeholder="ihre@email.de" />
-    <button class="btn" onclick="emailAbschicken()">Detailbericht anfordern →</button>
-
-    <div class="erfolg" id="erfolg-meldung">
-      ✓ Vielen Dank — Ihr Bericht ist unterwegs.
-    </div>
+    <p>Erhalten Sie Ihre detaillierte Analyse mit konkreten Handlungsempfehlungen als PDF – kostenlos und unverbindlich.</p>
+    <input class="email-input" type="email" id="email-feld" placeholder="ihre@email.de">
+    <button class="btn" onclick="emailAbschicken()">Detailbericht anfordern</button>
+    <div class="erfolg" id="erfolg-meldung">✓ Vielen Dank — Ihr Bericht ist unterwegs.</div>
   </div>
 
-  <div class="footer">compliance-check.ai &nbsp;·&nbsp; KI-Compliance für den Mittelstand</div>
+  <div class="footer">KI-Compliance für den Mittelstand</div>
 
 </div>
 
 <script>
-  // ── Hilfsfunktion: URL-Parameter lesen ──
+  const MAKE_WEBHOOK = 'https://hook.eu1.make.com/p639c5iuq1epw279pui7twirksd7a1yv';
+
+  // Ampel-Farbsets
+  const AMPEL = {
+    rot: {
+      color:  '#C83A32',
+      soft:   '#FDECEC',
+      text:   '#B42318',
+      label:  'Erhöhter Handlungsbedarf – kurzfristig empfohlen'
+    },
+    gelb: {
+      color:  '#E67E22',
+      soft:   '#FFF1E6',
+      text:   '#C75B12',
+      label:  'Teilweise Handlungsbedarf – mittelfristig prüfen'
+    },
+    gruen: {
+      color:  '#2E9E5B',
+      soft:   '#EAF7EE',
+      text:   '#1F7A45',
+      label:  'Aktuell gut aufgestellt – Optimierung sinnvoll'
+    }
+  };
+
   function getParam(name) {
     return new URLSearchParams(window.location.search).get(name);
   }
 
-  // ── Make Webhook URL für Szenario 3 ──
-  const MAKE_WEBHOOK = 'https://hook.eu1.make.com/p639c5iuq1epw279pui7twirksd7a1yv';
-
-  // ── Elemente ──
-  const karte  = document.getElementById('score-karte');
-  const badge  = document.getElementById('ampel-badge');
-  const zahl   = document.getElementById('score-zahl');
-  const balken = document.getElementById('balken');
-  const info   = document.getElementById('ergebnis-text');
-
-  // ── Ampel-Konfiguration ──
-  const config = {
-    rot:   { label: '🔴  Hohes Risiko — Sofort handeln',    klasse: 'rot'   },
-    gelb:  { label: '🟡  Handlungsbedarf — Kurzfristig',    klasse: 'gelb'  },
-    gruen: { label: '🟢  Solide Basis — Weiter optimieren', klasse: 'gruen' },
-  };
-
-  // ── Ergebnis anzeigen ──
   function zeigeErgebnis(score, ampel, text) {
-    const c = config[ampel.toLowerCase()] || config['rot'];
-    karte.classList.remove('rot', 'gelb', 'gruen');
-    karte.classList.add(c.klasse);
-    badge.textContent = c.label;
-    zahl.textContent  = score;
-    info.textContent  = text || 'Keine weiteren Informationen verfügbar.';
-    setTimeout(() => { balken.style.width = score + '%'; }, 300);
+    const key = ampel.toLowerCase();
+    const cfg = AMPEL[key] || AMPEL['rot'];
+
+    // CSS-Variablen setzen
+    document.documentElement.style.setProperty('--ampel-color', cfg.color);
+    document.documentElement.style.setProperty('--ampel-soft',  cfg.soft);
+    document.documentElement.style.setProperty('--ampel-text',  cfg.text);
+
+    // Inhalte befüllen
+    document.getElementById('score-zahl').textContent  = score;
+    document.getElementById('status-badge').textContent = cfg.label;
+    document.getElementById('desc-text').textContent   = text || '';
+
+    // Balken animieren
+    setTimeout(() => {
+      document.getElementById('bar-fill').style.width = score + '%';
+    }, 300);
+
+    // Zustand umschalten
+    document.getElementById('lade-bereich').style.display    = 'none';
+    document.getElementById('ergebnis-bereich').style.display = 'block';
   }
 
-  // ── Ergebnis von Make abrufen (Polling) ──
   async function ergebnisAbrufen(rid) {
     try {
-      const antwort = await fetch(MAKE_WEBHOOK, {
+      const res   = await fetch(MAKE_WEBHOOK, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ rid: rid })
+        body:    JSON.stringify({ rid })
       });
-
-      const daten = await antwort.json();
-
-      // Prüfen ob Make ein echtes Ergebnis zurückgibt
+      const daten = await res.json();
       if (daten.score && daten.ampel && daten.score !== '' && daten.ampel !== '') {
         zeigeErgebnis(daten.score, daten.ampel, daten.text);
-        return true; // Erfolg — Polling stoppen
+        return true;
       }
-    } catch (fehler) {
-      console.log('Warte auf Ergebnis...', fehler);
-    }
-    return false; // Noch kein Ergebnis — weiter pollen
+    } catch(e) { /* weiter versuchen */ }
+    return false;
   }
 
-  // ── Polling starten ──
   async function startPolling(rid) {
+    // Sofortversuch
+    if (await ergebnisAbrufen(rid)) return;
+
     let versuche = 0;
-    const maxVersuche = 30; // max 60 Sekunden (30 x 2 Sek)
-
-    // Sofort beim Start die erste Anfrage schicken
-    const sofortErfolg = await ergebnisAbrufen(rid);
-    if (sofortErfolg) return;
-
-    const intervall = setInterval(async () => {
+    const timer = setInterval(async () => {
       versuche++;
-      const erfolg = await ergebnisAbrufen(rid);
-
-      if (erfolg || versuche >= maxVersuche) {
-        clearInterval(intervall);
-        if (!erfolg) {
-          badge.innerHTML = '⚠️  Ergebnis nicht gefunden';
-          zahl.textContent = '—';
-          info.textContent = 'Das Ergebnis konnte nicht geladen werden. Bitte versuchen Sie es erneut.';
+      if (await ergebnisAbrufen(rid) || versuche >= 30) {
+        clearInterval(timer);
+        if (versuche >= 30) {
+          document.getElementById('lade-bereich').innerHTML =
+            '<div class="lade-text">Ergebnis konnte nicht geladen werden. Bitte Seite neu laden.</div>';
         }
       }
-    }, 2000); // alle 2 Sekunden
+    }, 2000);
   }
 
-  // ── Hauptlogik ──
+  // Start
   const rid = getParam('rid');
-
   if (rid) {
     startPolling(rid);
   } else {
-    badge.innerHTML  = '⚠️  Kein Ergebnis gefunden';
-    zahl.textContent = '—';
-    info.textContent = 'Kein gültiger Ergebnis-Link. Bitte das Formular erneut ausfüllen.';
+    document.getElementById('lade-bereich').innerHTML =
+      '<div class="lade-text">Kein gültiger Ergebnis-Link.</div>';
   }
 
-  // ── E-Mail abschicken ──
+  // E-Mail abschicken
   function emailAbschicken() {
     const email  = document.getElementById('email-feld').value.trim();
-    const fehler = document.getElementById('fehler-box');
-    const erfolg = document.getElementById('erfolg-meldung');
-
     const gueltig = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!gueltig) { alert('Bitte gültige E-Mail-Adresse eingeben.'); return; }
 
-    if (!gueltig) {
-      fehler.style.display = 'block';
-      return;
-    }
-
-    fehler.style.display = 'none';
-
-    const webhookUrl = 'https://hook.eu1.make.com/qln1ff4prl4kelruer2ry12arkhxvydd';
-
-    fetch(webhookUrl, {
+    fetch('https://hook.eu1.make.com/qln1ff4prl4kelruer2ry12arkhxvydd', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
-        email: email,
-        score: zahl.textContent,
-        ampel: document.getElementById('ampel-badge').textContent.trim(),
+        email,
+        score: document.getElementById('score-zahl').textContent,
+        ampel: document.getElementById('status-badge').textContent,
         rid:   getParam('rid') || ''
       })
-    })
-    .then(() => {
-      document.getElementById('email-feld').style.display = 'none';
-      document.querySelector('.btn').style.display = 'none';
-      erfolg.style.display = 'block';
-    })
-    .catch(() => {
-      erfolg.style.display = 'block';
+    }).then(() => {
+      document.getElementById('email-feld').style.display   = 'none';
+      document.querySelector('.btn').style.display          = 'none';
+      document.getElementById('erfolg-meldung').style.display = 'block';
+    }).catch(() => {
+      document.getElementById('erfolg-meldung').style.display = 'block';
     });
   }
 </script>
-
 </body>
 </html>
